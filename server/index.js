@@ -5,7 +5,7 @@ dotenv.config()
 import cookieParser from 'cookie-parser'
 import morgan from 'morgan'
 import helmet from 'helmet'
-
+import connectDB from './config/connectDB.js'
 const app = express()
 app.use(cors({
     credentials : true,
@@ -13,12 +13,12 @@ app.use(cors({
 }))
 app.use(express.json())
 app.use(cookieParser())
-app.use(morgan())
+app.use(morgan('dev'))
 app.use(helmet({
     crossOriginResourcePolicy : false
 }))
 
-const PORT = 8080  || process.env.PORT
+const PORT = process.env.PORT || 8080;
 
 
 app.get("/", (req, res) => {
@@ -27,6 +27,9 @@ app.get("/", (req, res) => {
     })
 })
 
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`)
+connectDB().then(() => {
+    app.listen(PORT, () => {
+        console.log(`Server is running on port ${PORT}`)
+    })
 })
+
